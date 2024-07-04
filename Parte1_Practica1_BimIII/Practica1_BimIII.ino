@@ -12,10 +12,9 @@
    
 */
 
-#include <Ultrasonic.h>
 #include <Adafruit_NeoPixel.h>
 
-#define PIN_Leds 2        // Cambiado de 3 a 2 para evitar conflicto
+#define PIN_Leds 2
 #define NUMPIXELS 16
 
 #define Trigger 10
@@ -29,12 +28,11 @@
 #define F 8
 #define G 9
 
-int conteo_personas = 0;
-unsigned long tiempo_ultima_lectura = 0;
-const unsigned long debounce_delay = 500;  
+Adafruit_NeoPixel neopixel = Adafruit_NeoPixel(NUMPIXELS, PIN_Leds, NEO_GRB + NEO_KHZ800);
 
-Adafruit_NeoPixel neopixel = Adafruit_NeoPixel(NUMPIXELS, PIN_Leds, NEO_GRB + NEO_KHZ800); // Cambiado para coincidir con NUMPIXELS
-Ultrasonic ultrasonic(Trigger, Echo);
+int conteo_personas = 0;
+float Medida;
+float MedidaAnterior = 0;
 
 void setup() {
   Serial.begin(9600);
@@ -52,30 +50,41 @@ void setup() {
   pinMode(F, OUTPUT);
   pinMode(G, OUTPUT);
 
+  // Apagar todos los segmentos al inicio
   apagarDisplay();
 }
 
 void loop() {
-  unsigned long current_time = millis();
-  
-  if (current_time - tiempo_ultima_lectura > debounce_delay) {
-    int distancia = ultrasonic.Ranging(CM);
-    
-    if (distancia >= 6 && distancia <= 10) {
-      conteo_personas++;
-      if (conteo_personas > 9) {
-        conteo_personas = 9; // Limitar el conteo a 9
-      }
-      actualizarDisplay();
-      tiempo_ultima_lectura = current_time;
+  Medida = LecturaDistancia();
+  Serial.println(Medida);
+  delay(100);
+  if (Medida >= 6 && Medida <= 10 && (MedidaAnterior < 6 || MedidaAnterior > 10)) {
+    conteo_personas++;
+    if (conteo_personas > 10) {
+      conteo_personas = 0;
     }
+    actualizarDisplay();
+    Serial.println(conteo_personas);
   }
+  MedidaAnterior = Medida;
+}
+
+float LecturaDistancia() {
+  digitalWrite(Trigger, LOW);
+  delayMicroseconds(2);
+  digitalWrite(Trigger, HIGH);
+  delayMicroseconds(10);
+  digitalWrite(Trigger, LOW);
+  float sensor = pulseIn(Echo, HIGH);
+  float distancia = sensor / 59;
+  return distancia;
 }
 
 void actualizarDisplay() {
-  apagarDisplay(); 
+  apagarDisplay();
   switch (conteo_personas) {
     case 0:
+      encenderNeoPixelVerde();
       digitalWrite(A, HIGH);
       digitalWrite(B, HIGH);
       digitalWrite(C, HIGH);
@@ -84,10 +93,12 @@ void actualizarDisplay() {
       digitalWrite(F, HIGH);
       break;
     case 1:
+      encenderNeoPixelVerde();
       digitalWrite(B, HIGH);
       digitalWrite(C, HIGH);
       break;
     case 2:
+      encenderNeoPixelVerde();
       digitalWrite(A, HIGH);
       digitalWrite(B, HIGH);
       digitalWrite(D, HIGH);
@@ -95,6 +106,7 @@ void actualizarDisplay() {
       digitalWrite(G, HIGH);
       break;
     case 3:
+      encenderNeoPixelVerde();
       digitalWrite(A, HIGH);
       digitalWrite(B, HIGH);
       digitalWrite(C, HIGH);
@@ -102,12 +114,14 @@ void actualizarDisplay() {
       digitalWrite(G, HIGH);
       break;
     case 4:
+      encenderNeoPixelVerde();
       digitalWrite(B, HIGH);
       digitalWrite(C, HIGH);
       digitalWrite(F, HIGH);
       digitalWrite(G, HIGH);
       break;
     case 5:
+      encenderNeoPixelVerde();
       digitalWrite(A, HIGH);
       digitalWrite(C, HIGH);
       digitalWrite(D, HIGH);
@@ -115,6 +129,7 @@ void actualizarDisplay() {
       digitalWrite(G, HIGH);
       break;
     case 6:
+      encenderNeoPixelVerde();
       digitalWrite(A, HIGH);
       digitalWrite(C, HIGH);
       digitalWrite(D, HIGH);
@@ -123,11 +138,13 @@ void actualizarDisplay() {
       digitalWrite(G, HIGH);
       break;
     case 7:
+      encenderNeoPixelVerde();
       digitalWrite(A, HIGH);
       digitalWrite(B, HIGH);
       digitalWrite(C, HIGH);
       break;
     case 8:
+      encenderNeoPixelVerde();
       digitalWrite(A, HIGH);
       digitalWrite(B, HIGH);
       digitalWrite(C, HIGH);
@@ -137,15 +154,32 @@ void actualizarDisplay() {
       digitalWrite(G, HIGH);
       break;
     case 9:
+      encenderNeoPixelVerde();
       digitalWrite(A, HIGH);
       digitalWrite(B, HIGH);
       digitalWrite(C, HIGH);
       digitalWrite(F, HIGH);
       digitalWrite(G, HIGH);
       break;
-    default:
+    case 10:
+      encenderNeoPixelRojo();
       digitalWrite(G, HIGH);
+      break;
   }
+}
+
+void encenderNeoPixelVerde() {
+  for (int i = 0; i < NUMPIXELS; i++) {
+    neopixel.setPixelColor(i, neopixel.Color(0, 255, 0));
+  }
+  neopixel.show();
+}
+
+void encenderNeoPixelRojo() {
+  for (int i = 0; i < NUMPIXELS; i++) {
+    neopixel.setPixelColor(i, neopixel.Color(255, 0, 0));
+  }
+  neopixel.show();
 }
 
 void apagarDisplay() {
