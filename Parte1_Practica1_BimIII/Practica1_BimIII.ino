@@ -165,16 +165,17 @@ void actualizarDisplay() {
       digitalWrite(C, HIGH);
       digitalWrite(F, HIGH);
       digitalWrite(G, HIGH);
-      delay(5000);
-      digitalWrite(G, HIGH);
+      delay(3000);
       digitalWrite(A, LOW);
       digitalWrite(B, LOW);
       digitalWrite(C, LOW);
       digitalWrite(F, LOW);
       digitalWrite(G, LOW);
+      digitalWrite(G, HIGH);
       conteo_personas = 10;
       break;
     default:
+      encenderNeoPixelRojo();
       digitalWrite(G, HIGH);
   }
 }
