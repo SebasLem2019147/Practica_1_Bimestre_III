@@ -165,10 +165,13 @@ void actualizarDisplay() {
       digitalWrite(C, HIGH);
       digitalWrite(F, HIGH);
       digitalWrite(G, HIGH);
-      break;
-    case 10:
-      encenderNeoPixelRojo();
+      delay(5000);
       digitalWrite(G, HIGH);
+      digitalWrite(A, LOW);
+      digitalWrite(B, LOW);
+      digitalWrite(C, LOW);
+      digitalWrite(F, LOW);
+      digitalWrite(G, LOW);
       conteo_personas = 10;
       break;
     default:
