@@ -6,9 +6,9 @@
    Codigo Tecnico: EB5AV 
    Curso: Taller de electronica digital y reparacion de computadoras I
    Dev: Sebastian Enrique Lemus Salvador
-   Fecha: 21 de junio de 2024
+   Fecha: 4 de julio de 2024
    
-   link de la simulacion: 
+   link de la simulacion: https://www.tinkercad.com/things/4snlNrY9odO-parte-i-practica-1-bim-iii 
    
 */
 
