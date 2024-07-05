@@ -35,6 +35,7 @@ float Medida;
 float MedidaAnterior = 0;
 
 void setup() {
+  Serial.begin(9600);
   neopixel.begin();
   neopixel.setBrightness(50);
 
@@ -66,7 +67,6 @@ void loop() {
   if (Medida >= 6 && Medida <= 10 && (MedidaAnterior < 6 || MedidaAnterior > 10)) {
     conteo_personas++;
     if (conteo_personas > 10) {
-      conteo_personas = 0;
     }
     actualizarDisplay();
     Serial.println(conteo_personas);
@@ -159,7 +159,7 @@ void actualizarDisplay() {
       digitalWrite(G, HIGH);
       break;
     case 9:
-      encenderNeoPixelVerde();
+      encenderNeoPixelRojo();
       digitalWrite(A, HIGH);
       digitalWrite(B, HIGH);
       digitalWrite(C, HIGH);
@@ -169,7 +169,10 @@ void actualizarDisplay() {
     case 10:
       encenderNeoPixelRojo();
       digitalWrite(G, HIGH);
+      conteo_personas = 10;
       break;
+    default:
+      digitalWrite(G, HIGH);
   }
 }
 
