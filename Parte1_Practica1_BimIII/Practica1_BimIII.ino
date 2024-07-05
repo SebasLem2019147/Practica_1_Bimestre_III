@@ -35,7 +35,6 @@ float Medida;
 float MedidaAnterior = 0;
 
 void setup() {
-  Serial.begin(9600);
   neopixel.begin();
   neopixel.setBrightness(50);
 
@@ -49,9 +48,15 @@ void setup() {
   pinMode(E, OUTPUT);
   pinMode(F, OUTPUT);
   pinMode(G, OUTPUT);
+  
+  digitalWrite(A, HIGH);
+  digitalWrite(B, HIGH);
+  digitalWrite(C, HIGH);
+  digitalWrite(D, HIGH);
+  digitalWrite(E, HIGH);
+  digitalWrite(F, HIGH);
 
-  // Apagar todos los segmentos al inicio
-  apagarDisplay();
+  encenderNeoPixelVerde();
 }
 
 void loop() {
